@@ -13,11 +13,7 @@ impl Solution for AoC1 {
         let mut value = 50;
         let mut times = 0;
         for rot in rotations {
-            value += rot.amount as i16
-                * match rot.direction {
-                    Direction::Left => -1,
-                    Direction::Right => 1,
-                };
+            value += rot.amount as i16 * rot.direction;
 
             value %= 100;
             if value == 0 {
@@ -34,12 +30,8 @@ impl Solution for AoC1 {
         let mut value = 50;
         let mut times = 0;
         for rot in rotations {
-            let dir_coef = match rot.direction {
-                Direction::Left => -1i16,
-                Direction::Right => 1,
-            };
             for _ in 0..rot.amount {
-                value += dir_coef;
+                value += rot.direction;
                 value %= 100;
                 if value == 0 {
                     times += 1;
@@ -52,20 +44,15 @@ impl Solution for AoC1 {
 }
 
 struct Rotation {
-    direction: Direction,
+    direction: i16,
     amount: u16,
-}
-
-enum Direction {
-    Left,
-    Right,
 }
 
 fn parse_rotation(s: &str) -> Rotation {
     let (dir_char, amount_str) = s.split_at(1);
     let direction = match dir_char {
-        "L" => Direction::Left,
-        "R" => Direction::Right,
+        "L" => -1,
+        "R" => 1,
         _ => panic!("Invalid rotation direction: {}", dir_char),
     };
     let amount = amount_str.parse::<u16>().expect("Invalid rotation amount");
