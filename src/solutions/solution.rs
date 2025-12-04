@@ -10,11 +10,11 @@ pub trait Solution {
             self.solve1(format!("{}a", day).as_str()),
             self.solve1(format!("{}b", day).as_str())
         );
-        // println!(
-        //     "Part 2 Sample: {:20} | Real:   {:20}\n",
-        //     self.solve2(format!("{}a", day).as_str()),
-        //     self.solve2(format!("{}b", day).as_str())
-        // );
+        println!(
+            "Part 2 Sample: {:20} | Real:   {:20}\n",
+            self.solve2(format!("{}a", day).as_str()),
+            self.solve2(format!("{}b", day).as_str())
+        );
     }
 
     fn solve1(&self, input: &str) -> u64 {
