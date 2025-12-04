@@ -34,54 +34,36 @@ fn parse(input: &str) -> Vec<Vec<u8>> {
         .collect()
 }
 
-fn solve(batteries: &[u8], max: u8) -> u64 {
-    let mut taken = 0;
-    let mut res = 0u64;
-
-    for i in 0..batteries.len() {
-        let cur = batteries[i] as u64;
-        if i == batteries.len() - 1 {
-            res = res * 10 + cur;
-            break;
-        }
-
-        let num_needed: usize = max as usize - taken;
-        let num_left = batteries.len() - i;
-        let rest_digits: Vec<u8> = batteries.iter().skip(i + 1).copied().collect();
-        let biggest = n_th_biggest(&rest_digits, num_needed);
-
-        if num_left == num_needed || biggest.iter().all(|b| cur > *b as u64) {
-            res = res * 10 + cur;
-            taken += 1;
-            if taken == max as usize {
-                break;
-            }
-        }
-    }
-
-    res
+fn solve(batteries: &[u8], max: usize) -> u64 {
+    solve_rec(batteries, max, 0, 0, 0)
 }
 
-fn n_th_biggest(nums: &[u8], num_values: usize) -> Vec<u8> {
-    let mut res = vec![];
-    let mut taken: Vec<bool> = nums.iter().map(|_| false).collect();
+fn solve_rec(batteries: &[u8], max: usize, taken: usize, index: usize, mask: u32) -> u64 {
+    if taken == max {
+        return mask_to_real(batteries, mask);
+    }
 
-    for _ in 0..num_values {
-        let mut max = 0;
-        let mut winner = 0;
-        for (index, n) in nums.iter().enumerate() {
-            if taken[index] {
-                continue;
-            }
+    if index >= batteries.len() {
+        return 0;
+    }
 
-            if *n > max {
-                max = *n;
-                winner = index;
-            }
+    // Try take
+    let taken_mask = mask | 1 << index;
+    let take = solve_rec(batteries, max, taken + 1, index + 1, taken_mask);
+
+    // Try don't take
+
+    let no_take = solve_rec(batteries, max, taken, index + 1, mask);
+
+    take.max(no_take)
+}
+
+fn mask_to_real(batteries: &[u8], mask: u32) -> u64 {
+    let mut res = 0;
+    for (i, n) in batteries.iter().enumerate() {
+        if mask & 1 << i > 0 {
+            res = res * 10 + *n as u64;
         }
-
-        taken[winner] = true;
-        res.push(max);
     }
 
     res
