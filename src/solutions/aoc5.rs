@@ -57,8 +57,7 @@ fn consolidate_ranges(ranges: &[Range]) -> Vec<Range> {
                 break;
             }
 
-            for j in i + 1..ret.len() {
-                let b = &ret[j];
+            for (j, b) in ret.iter().enumerate().skip(i + 1) {
                 if !a.intersects(b) {
                     continue;
                 }
