@@ -5,7 +5,7 @@
                 {
                     "name": "Run",
                     "commands": [
-                        "nodemon -e rs,txt -x \"cargo run\""
+                        "nodemon -e rs,txt --watch src -x \"cargo run\""
                     ]
                 },
                 {
