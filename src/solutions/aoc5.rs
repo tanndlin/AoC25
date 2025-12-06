@@ -1,4 +1,7 @@
+use std::str::FromStr;
+
 use crate::solutions::solution::Solution;
+use crate::utils::range::Range;
 
 pub struct AoC5;
 
@@ -12,7 +15,7 @@ impl Solution for AoC5 {
         puzzle
             .ingredients
             .iter()
-            .filter(|id| is_fresh(id, &puzzle.ranges))
+            .filter(|id| is_fresh(**id, &puzzle.ranges))
             .count() as u64
     }
 
@@ -28,7 +31,10 @@ impl Solution for AoC5 {
 fn parse(input: &str) -> Puzzle {
     let (ranges_str, ids) = input.split_once("\r\n\r\n").expect("No delimiter found");
     Puzzle {
-        ranges: ranges_str.split("\r\n").map(Range::new).collect(),
+        ranges: ranges_str
+            .split("\r\n")
+            .map(|s| Range::from_str(s).unwrap())
+            .collect(),
         ingredients: ids
             .split_ascii_whitespace()
             .map(|id| id.parse().unwrap())
@@ -36,8 +42,8 @@ fn parse(input: &str) -> Puzzle {
     }
 }
 
-fn is_fresh(id: &u64, ranges: &[Range]) -> bool {
-    ranges.iter().any(|r| r.start <= *id && r.end >= *id)
+fn is_fresh(id: u64, ranges: &[Range]) -> bool {
+    ranges.iter().any(|r| r.contians(id))
 }
 
 fn consolidate_ranges(ranges: &[Range]) -> Vec<Range> {
@@ -78,35 +84,4 @@ fn consolidate_ranges(ranges: &[Range]) -> Vec<Range> {
 struct Puzzle {
     ranges: Vec<Range>,
     ingredients: Vec<u64>,
-}
-
-#[derive(Clone)]
-struct Range {
-    start: u64,
-    end: u64,
-}
-
-impl Range {
-    pub fn new(range: &str) -> Self {
-        let (start_str, end_str) = range.split_once("-").unwrap();
-        Range {
-            start: start_str.parse().unwrap(),
-            end: end_str.parse().unwrap(),
-        }
-    }
-
-    pub fn intersects(&self, other: &Range) -> bool {
-        self.start <= other.end && other.start <= self.end
-    }
-
-    pub fn count_range(&self) -> u64 {
-        self.end - self.start + 1
-    }
-
-    fn expand(&self, other: &Range) -> Range {
-        Range {
-            start: self.start.min(other.start),
-            end: self.end.max(other.end),
-        }
-    }
 }

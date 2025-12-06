@@ -1,4 +1,6 @@
-use crate::solutions::solution::Solution;
+use std::str::FromStr;
+
+use crate::{solutions::solution::Solution, utils::range::Range};
 
 pub struct AoC2;
 
@@ -38,30 +40,12 @@ impl Solution for AoC2 {
     }
 }
 
-struct Range {
-    start: u64,
-    end: u64,
-}
-
-impl Range {
-    pub fn new(range: &str) -> Self {
-        let (start_str, end_str) = range
-            .trim()
-            .split_once('-')
-            .expect("Invalid range format, expected 'start-end'");
-        Range {
-            start: start_str
-                .parse()
-                .unwrap_or_else(|_| panic!("Unable to parse range start: {}", start_str)),
-            end: end_str
-                .parse()
-                .unwrap_or_else(|_| panic!("Unable to parse range end: {}", end_str)),
-        }
-    }
-}
-
 fn parse_ranges(input: &str) -> Vec<Range> {
-    input.split_terminator(',').map(Range::new).collect()
+    input
+        .split_terminator(',')
+        .map(|s| s.trim())
+        .map(|s| Range::from_str(s).unwrap())
+        .collect()
 }
 
 fn is_invalid(n: u64) -> bool {

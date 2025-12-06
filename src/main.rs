@@ -1,4 +1,5 @@
 mod solutions;
+mod utils;
 
 use crate::solutions::{
     aoc1::AoC1, aoc2::AoC2, aoc3::AoC3, aoc4::AoC4, aoc5::AoC5, aoc6::AoC6, solution::Solution,

@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use crate::solutions::solution::Solution;
 
 pub struct AoC6;
