@@ -36,40 +36,35 @@ impl Solution for AoC6 {
         total
     }
 
+    // Hardest part of this problem is parsing and transposing the digits
     fn part2(&self, input: &str) -> u64 {
-        // let transposed = vec![];
-
         let lines = input.split("\r\n").collect::<Vec<_>>();
         let num_rows = lines.len();
         let mut transposed = vec![];
-        // Find first index where all columns are whitespace
+
         let mut index = 0;
         let mut operators = vec![];
         loop {
-            let mut digits = vec![];
+            let mut nums = vec![];
             operators.push(lines[num_rows - 1].chars().nth(index).unwrap());
 
+            // Find each index where all columns are whitespace
             while index < lines[0].len()
                 && !lines
                     .iter()
                     .all(|line| line.chars().nth(index).unwrap() == ' ')
             {
-                lines[..num_rows - 1]
+                // Transpose by combining the nth digit of each number into a new number
+                let number = lines[..num_rows - 1]
                     .iter()
-                    .for_each(|line| digits.push(line.chars().nth(index).unwrap()));
-                index += 1;
-            }
+                    .map(|line| line.chars().nth(index).unwrap())
+                    .filter(|c| *c != ' ') // Remove rows with no digit
+                    .collect::<String>() // Combine and parse to number
+                    .parse()
+                    .unwrap();
 
-            let digits_per_number = num_rows - 1;
-            let number_of_numbers = digits.len() / digits_per_number;
-            let mut nums = vec![0u64; number_of_numbers];
-            for i in 0..number_of_numbers {
-                for j in 0..digits_per_number {
-                    if let Some(new_digit) = digits[i * digits_per_number + j].to_digit(10) {
-                        nums[i] *= 10;
-                        nums[i] += new_digit as u64;
-                    }
-                }
+                nums.push(number);
+                index += 1;
             }
 
             transposed.push(nums);
