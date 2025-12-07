@@ -1,5 +1,4 @@
 use crate::{solutions::solution::Solution, utils::util::SplitLines};
-use memoize::memoize;
 
 pub struct AoC7;
 
@@ -57,32 +56,41 @@ impl Solution for AoC7 {
 
     fn part2(&self, input: &str) -> u64 {
         let grid = parse(input);
-        rec(
-            &grid,
-            0,
-            grid[0].iter().position(|c| *c == Cell::Start).unwrap(),
-        )
+        let mut dp: Vec<Vec<u64>> = grid.iter().map(|r| r.iter().map(|_| 0).collect()).collect();
+        let start_index = grid[0].iter().position(|c| *c == Cell::Start).unwrap();
+        dp[0][start_index] = 1;
+
+        for y in 1..dp.len() {
+            for x in 0..grid[y].len() {
+                // If there is nothing blocking above, trickle down
+                let above = grid[y - 1][x];
+                if above != Cell::Splitter {
+                    dp[y][x] = dp[y - 1][x];
+                }
+
+                // Trickle splitters to the right
+                if x > 0 && grid[y][x - 1] == Cell::Splitter {
+                    dp[y][x] += dp[y - 1][x - 1]
+                }
+
+                // Trickle splitters to the left
+                if x < grid[0].len() - 1 && grid[y][x + 1] == Cell::Splitter {
+                    dp[y][x] += dp[y - 1][x + 1]
+                }
+            }
+        }
+
+        // Answer is the sum of the ways to get to each bottom row cell
+        dp[dp.len() - 1].iter().sum()
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Clone, Copy)]
+#[derive(Eq, PartialEq, Clone, Copy)]
 enum Cell {
     Start,
     Beam,
     Splitter,
     Empty,
-}
-
-impl std::fmt::Display for Cell {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let symbol = match self {
-            Cell::Start => 'S',
-            Cell::Beam => '|',
-            Cell::Splitter => '^',
-            Cell::Empty => '.',
-        };
-        write!(f, "{}", symbol)
-    }
 }
 
 impl Cell {
@@ -103,43 +111,4 @@ fn parse(input: &str) -> Vec<Vec<Cell>> {
     }
 
     ret
-}
-
-fn print_grid(grid: &Vec<Vec<Cell>>) {
-    for row in grid {
-        for cell in row {
-            print!("{}", cell);
-        }
-        println!();
-    }
-}
-
-// Can ignore grid, it does not change
-#[memoize(Ignore: grid)]
-fn rec(grid: &Vec<Vec<Cell>>, y: usize, x: usize) -> u64 {
-    if y == grid.len() - 1 {
-        return 1;
-    }
-
-    let below = grid[y + 1][x];
-    match below {
-        Cell::Start | Cell::Beam => panic!(),
-        Cell::Empty => {
-            // Continue on, no choice to be made
-            rec(grid, y + 1, x)
-        }
-        Cell::Splitter => {
-            // Go left
-            let left = if x > 0 { rec(grid, y + 1, x - 1) } else { 0 };
-
-            // Go right
-            let right = if x < grid[y].len() - 1 {
-                rec(grid, y + 1, x + 1)
-            } else {
-                0
-            };
-
-            left + right
-        }
-    }
 }
