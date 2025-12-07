@@ -1,4 +1,5 @@
 use crate::{solutions::solution::Solution, utils::util::SplitLines};
+use memoize::memoize;
 
 pub struct AoC7;
 
@@ -55,7 +56,12 @@ impl Solution for AoC7 {
     }
 
     fn part2(&self, input: &str) -> u64 {
-        0
+        let grid = parse(input);
+        rec(
+            &grid,
+            0,
+            grid[0].iter().position(|c| *c == Cell::Start).unwrap(),
+        )
     }
 }
 
@@ -105,5 +111,35 @@ fn print_grid(grid: &Vec<Vec<Cell>>) {
             print!("{}", cell);
         }
         println!();
+    }
+}
+
+// Can ignore grid, it does not change
+#[memoize(Ignore: grid)]
+fn rec(grid: &Vec<Vec<Cell>>, y: usize, x: usize) -> u64 {
+    if y == grid.len() - 1 {
+        return 1;
+    }
+
+    let below = grid[y + 1][x];
+    match below {
+        Cell::Start | Cell::Beam => panic!(),
+        Cell::Empty => {
+            // Continue on, no choice to be made
+            rec(grid, y + 1, x)
+        }
+        Cell::Splitter => {
+            // Go left
+            let left = if x > 0 { rec(grid, y + 1, x - 1) } else { 0 };
+
+            // Go right
+            let right = if x < grid[y].len() - 1 {
+                rec(grid, y + 1, x + 1)
+            } else {
+                0
+            };
+
+            left + right
+        }
     }
 }
