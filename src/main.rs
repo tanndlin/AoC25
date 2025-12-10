@@ -3,7 +3,7 @@ mod utils;
 
 use crate::solutions::{
     aoc1::AoC1, aoc2::AoC2, aoc3::AoC3, aoc4::AoC4, aoc5::AoC5, aoc6::AoC6, aoc7::AoC7, aoc8::AoC8,
-    solution::Solution,
+    aoc9::AoC9, solution::Solution,
 };
 
 fn main() {
@@ -15,4 +15,5 @@ fn main() {
     AoC6::new().run(6);
     AoC7::new().run(7);
     AoC8::new().run(8);
+    AoC9::new().run(9);
 }
