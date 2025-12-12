@@ -1,5 +1,6 @@
 pub mod aoc1;
 pub mod aoc10;
+pub mod aoc11;
 pub mod aoc2;
 pub mod aoc3;
 pub mod aoc4;
