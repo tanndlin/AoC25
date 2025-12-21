@@ -51,7 +51,7 @@ fn parse_ranges(input: &str) -> Vec<Range> {
 fn is_invalid(n: u64) -> bool {
     let as_str = n.to_string();
     let length = as_str.len();
-    if length % 2 != 0 {
+    if !length.is_multiple_of(2) {
         return false;
     }
 
@@ -63,7 +63,7 @@ fn is_repeating(n: u64) -> bool {
     let as_str = n.to_string();
     let length = as_str.len();
     for size in 1..length / 2 + 1 {
-        if length % size != 0 {
+        if !length.is_multiple_of(size) {
             continue;
         }
 
