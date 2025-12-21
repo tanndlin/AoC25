@@ -1,6 +1,6 @@
 use std::{collections::HashMap, fmt::Display, str::FromStr};
 
-use crate::{solutions::solution::Solution, utils::util::SplitLines};
+use crate::solutions::solution::Solution;
 
 pub struct AoC8;
 
@@ -118,7 +118,7 @@ impl FromStr for Coords {
 }
 
 fn parse(input: &str) -> Result<Vec<Coords>, CoordsParseError> {
-    input.split_lines().map(Coords::from_str).collect()
+    input.lines().map(Coords::from_str).collect()
 }
 
 fn get_costs(coords: &[Coords]) -> Vec<(u64, (usize, usize))> {

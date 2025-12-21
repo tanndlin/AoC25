@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use crate::{solutions::solution::Solution, utils::util::SplitLines};
+use crate::solutions::solution::Solution;
 
 pub struct AoC9;
 
@@ -64,7 +64,7 @@ impl FromStr for Coords {
 
 fn parse(input: &str) -> Vec<Coords> {
     input
-        .split_lines()
+        .lines()
         .map(Coords::from_str)
         .map(|r| r.unwrap())
         .collect()

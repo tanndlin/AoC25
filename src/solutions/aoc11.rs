@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{solutions::solution::Solution, utils::util::SplitLines};
+use crate::solutions::solution::Solution;
 
 pub struct AoC11;
 
@@ -36,7 +36,7 @@ impl Solution for AoC11 {
 
 fn parse(input: &str) -> HashMap<&str, Vec<&str>> {
     input
-        .split_lines()
+        .lines()
         .map(|line| {
             let (source, output) = line.split_once(':').unwrap();
             (source, output.trim().split_ascii_whitespace().collect())

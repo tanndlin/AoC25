@@ -1,4 +1,4 @@
-use crate::{solutions::solution::Solution, utils::util::SplitLines};
+use crate::solutions::solution::Solution;
 
 pub struct AoC7;
 
@@ -106,7 +106,7 @@ impl Cell {
 
 fn parse(input: &str) -> Vec<Vec<Cell>> {
     let mut ret = vec![];
-    for line in input.split_lines() {
+    for line in input.lines() {
         ret.push(line.chars().map(Cell::new).collect());
     }
 

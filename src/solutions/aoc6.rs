@@ -1,4 +1,4 @@
-use crate::{solutions::solution::Solution, utils::util::SplitLines};
+use crate::solutions::solution::Solution;
 
 pub struct AoC6;
 
@@ -9,7 +9,7 @@ impl Solution for AoC6 {
 
     fn part1(&self, input: &str) -> u64 {
         let mut columns = vec![];
-        let lines: Vec<&str> = input.split_lines().collect();
+        let lines: Vec<&str> = input.lines().collect();
         let (operators, numbers) = lines.split_last().unwrap();
 
         for _ in 0..operators.split_ascii_whitespace().collect::<Vec<_>>().len() {
@@ -36,7 +36,7 @@ impl Solution for AoC6 {
 
     // Hardest part of this problem is parsing and transposing the digits
     fn part2(&self, input: &str) -> u64 {
-        let lines: Vec<&str> = input.split_lines().collect();
+        let lines: Vec<&str> = input.lines().collect();
         let num_rows = lines.len();
         let mut transposed = vec![];
 

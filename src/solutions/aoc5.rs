@@ -2,7 +2,6 @@ use std::str::FromStr;
 
 use crate::solutions::solution::Solution;
 use crate::utils::range::Range;
-use crate::utils::util::SplitLines;
 
 pub struct AoC5;
 
@@ -33,7 +32,7 @@ fn parse(input: &str) -> Puzzle {
     let (ranges_str, ids) = input.split_once("\r\n\r\n").expect("No delimiter found");
     Puzzle {
         ranges: ranges_str
-            .split_lines()
+            .lines()
             .map(|s| Range::from_str(s).unwrap())
             .collect(),
         ingredients: ids
